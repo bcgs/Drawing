@@ -15,10 +15,14 @@ import android.widget.ImageView;
 
 public class MainActivity extends ActionBarActivity {
 
+    //para carregar o openCV -> static{ System.loadLibrary("opencv_java"); }
+
     private static int RESULT_LOAD_IMG = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
