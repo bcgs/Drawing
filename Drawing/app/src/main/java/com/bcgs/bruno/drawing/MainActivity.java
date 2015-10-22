@@ -2,6 +2,7 @@ package com.bcgs.bruno.drawing;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,9 +14,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.imgcodecs.Imgcodecs;
+
+
 public class MainActivity extends ActionBarActivity {
 
-    //para carregar o openCV -> static{ System.loadLibrary("opencv_java"); }
+    static{ System.loadLibrary("opencv_java"); }
 
     private static int RESULT_LOAD_IMG = 1;
 
@@ -43,6 +50,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -78,7 +86,14 @@ public class MainActivity extends ActionBarActivity {
             cursor.close();
 
             ImageView imageView = (ImageView) findViewById(R.id.imgView);
-            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+
+            Mat imgSource = Imgcodecs.imread(picturePath);
+            Imgproc.Canny(imgSource, imgSource, 300, 600, 5, true);
+
+            Bitmap newImage = Bitmap.createBitmap(imgSource.cols(), imgSource.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(imgSource, newImage);
+
+            imageView.setImageBitmap(newImage);
         }
 
     }
