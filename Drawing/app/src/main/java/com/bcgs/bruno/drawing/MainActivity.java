@@ -22,7 +22,9 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class MainActivity extends ActionBarActivity {
 
-    static{ System.loadLibrary("opencv_java"); }
+    static{
+        System.loadLibrary("opencv_java3");
+    }
 
     private static int RESULT_LOAD_IMG = 1;
 
