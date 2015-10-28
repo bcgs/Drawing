@@ -15,9 +15,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.MatOfInt;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgcodecs.Imgcodecs;
+
+import static org.opencv.imgproc.Imgproc.threshold;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -90,10 +96,37 @@ public class MainActivity extends ActionBarActivity {
             ImageView imageView = (ImageView) findViewById(R.id.imgView);
 
             Mat imgSource = Imgcodecs.imread(picturePath);
-            Imgproc.Canny(imgSource, imgSource, 300, 600, 5, true);
+
+            Imgproc.cvtColor(imgSource, imgSource, Imgproc.COLOR_RGB2GRAY, 4); //gray
+
+            Mat edge = new Mat();
+            Mat dst = new Mat();
+
+
+
+
+            Mat Img_Thres_Gray = new Mat();
+
+            double CannyAccThresh = threshold(imgSource,Img_Thres_Gray,0,255, 8);
+
+            double CannyThresh = 0.1 * CannyAccThresh;
+
+
+            //precisa dar um blur antes de aplicar canny
+            //como dar o threshhold correto
+            //redimensionar a imagem
+
+            Imgproc.Canny(imgSource, edge, 50, 150, 3, true);
+
+            Mat image255 = Mat.ones(imgSource.size(), CvType.CV_8UC1);
+
+            Core.multiply(image255, new Scalar(255), image255);
+            Core.subtract(image255, edge, edge);
+
+            Imgproc.cvtColor(edge, dst, Imgproc.COLOR_GRAY2RGBA, 4);
 
             Bitmap newImage = Bitmap.createBitmap(imgSource.cols(), imgSource.rows(), Bitmap.Config.ARGB_8888);
-            Utils.matToBitmap(imgSource, newImage);
+            Utils.matToBitmap(dst, newImage);
 
             imageView.setImageBitmap(newImage);
         }
