@@ -7,24 +7,32 @@
     android:background="#ffffff"
     tools:context=".MainActivity">
 
+    <!-- View for image -->
     <ImageView
         android:id="@+id/imgView"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <!-- View for drawing over -->
+    <view
+        class="com.bcgs.bruno.drawing.MainDrawingView"
+        android:id="@+id/single_touch_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start|top"
+        android:background="#00FFFFFF"/>
 
     <Button
         android:id="@+id/btn_loadImg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Load image"
-        android:layout_gravity="center_horizontal|bottom"/>
-
-    <view
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.bcgs.bruno.drawing.MainDrawingView"
-        android:id="@+id/single_touch_view"
-        android:layout_gravity="left|top"
-        android:background="#00FFFFFF"/>
+        android:text="@string/btn_loadImg"
+        android:layout_gravity="end|bottom" />
+    <Button
+        android:id="@+id/btn_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_clear"
+        android:layout_gravity="start|bottom" />
 
 </FrameLayout>

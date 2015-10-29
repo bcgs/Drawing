@@ -3,7 +3,6 @@ package com.bcgs.bruno.drawing;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,7 +16,6 @@ import android.widget.ImageView;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
-import org.opencv.core.MatOfInt;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
@@ -41,9 +39,12 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btn_loadimg = (Button) findViewById(R.id.btn_loadImg);
+        Button btn_loadImg = (Button) findViewById(R.id.btn_loadImg);
+        Button btn_clearImg = (Button) findViewById(R.id.btn_clear);
 
-        btn_loadimg.setOnClickListener(new View.OnClickListener() {
+        final MainDrawingView mdv = (MainDrawingView) findViewById(R.id.single_touch_view);
+
+        btn_loadImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(
@@ -51,6 +52,13 @@ public class MainActivity extends ActionBarActivity {
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                 );
                 startActivityForResult(intent, RESULT_LOAD_IMG);
+            }
+        });
+
+        btn_clearImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mdv.reset();
             }
         });
     }

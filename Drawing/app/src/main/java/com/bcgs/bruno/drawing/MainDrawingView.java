@@ -50,4 +50,9 @@ public class MainDrawingView extends View {
         invalidate();
         return true;
     }
+
+    public void reset() {
+        path.reset();
+        invalidate();
+    }
 }
