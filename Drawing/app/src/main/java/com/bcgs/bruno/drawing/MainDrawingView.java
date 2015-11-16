@@ -11,19 +11,24 @@ import android.view.View;
 
 public class MainDrawingView extends View {
 
-    private Paint paint = new Paint();
-    private Path path = new Path();
+
+
+    //private Paint paint = new Paint();
+    //private Path path = new Path();
 
     public MainDrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        paint.setAntiAlias(true);               //Smooths out the edges
-        paint.setStrokeWidth(5f);               //Stroke width
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-    }
 
+
+
+        //paint.setAntiAlias(true);               //Smooths out the edges
+        //paint.setStrokeWidth(5f);               //Stroke width
+        //paint.setColor(Color.BLACK);
+        //paint.setStyle(Paint.Style.STROKE);
+        //paint.setStrokeJoin(Paint.Join.ROUND);
+    }
+    /*
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawPath(path, paint);
@@ -55,4 +60,5 @@ public class MainDrawingView extends View {
         path.reset();
         invalidate();
     }
+    */
 }

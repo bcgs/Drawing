@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.github.clans.fab.FloatingActionButton;
+
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -32,6 +34,8 @@ public class MainActivity extends ActionBarActivity {
 
     private static int RESULT_LOAD_IMG = 1;
 
+    private CanvasView canvas = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -39,10 +43,13 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btn_loadImg = (Button) findViewById(R.id.btn_loadImg);
-        Button btn_clearImg = (Button) findViewById(R.id.btn_clear);
+        FloatingActionButton btn_loadImg = (FloatingActionButton) findViewById(R.id.fabLoadImageBtn);
+        FloatingActionButton btn_clearImg = (FloatingActionButton) findViewById(R.id.fabClearScreenBtn);
 
-        final MainDrawingView mdv = (MainDrawingView) findViewById(R.id.single_touch_view);
+        this.canvas = (CanvasView)this.findViewById(R.id.canvas);
+        this.canvas.setMode(CanvasView.Mode.DRAW);
+
+        //final MainDrawingView mdv = (MainDrawingView) findViewById(R.id.single_touch_view);
 
         btn_loadImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +65,7 @@ public class MainActivity extends ActionBarActivity {
         btn_clearImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mdv.reset();
+                canvas.clear();
             }
         });
     }
@@ -101,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            ImageView imageView = (ImageView) findViewById(R.id.imgView);
+            //ImageView imageView = (ImageView) findViewById(R.id.imgView);
 
             Mat imgSource = Imgcodecs.imread(picturePath);
 
@@ -136,7 +143,7 @@ public class MainActivity extends ActionBarActivity {
             Bitmap newImage = Bitmap.createBitmap(imgSource.cols(), imgSource.rows(), Bitmap.Config.ARGB_8888);
             Utils.matToBitmap(dst, newImage);
 
-            imageView.setImageBitmap(newImage);
+            this.canvas.drawBitmap(newImage);
         }
 
     }
