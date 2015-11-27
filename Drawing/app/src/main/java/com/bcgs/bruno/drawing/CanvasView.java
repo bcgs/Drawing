@@ -197,6 +197,8 @@ public class CanvasView extends View {
         this.startX = event.getX();
         this.startY = event.getY();
 
+        //TODO: aqui eu posso checar o canvas a analisar qual é o ponto mais próximo
+
         path.moveTo(this.startX, this.startY);
 
         return path;
@@ -291,6 +293,8 @@ public class CanvasView extends View {
             case ERASER :
                 if ((this.drawer != Drawer.QUADRATIC_BEZIER) && (this.drawer != Drawer.QUBIC_BEZIER)) {
                     // Oherwise
+
+                    //TODO: aqui eu posso chamar vários createPaths para dar a impressão que há uma sombra
                     this.updateHistory(this.createPath(event));
                     this.isDown = true;
                 } else {
@@ -318,6 +322,7 @@ public class CanvasView extends View {
         }
     }
 
+    //TODO: análisar se também é preciso adicionar ruido por aqui
     /**
      * This method defines processes on MotionEvent.ACTION_MOVE
      *
@@ -536,13 +541,18 @@ public class CanvasView extends View {
     public void clear() {
         Path path = new Path();
         path.moveTo(0F, 0F);
-        path.addRect(0F, 0F, 1000F, 1000F, Path.Direction.CCW);
+        path.addRect(0F, 0F, this.getWidth(), getHeight(), Path.Direction.CCW);
         path.close();
 
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.FILL);
 
+        this.historyPointer = 1;
+        this.paintLists = new ArrayList<Paint>();
+        this.pathLists = new ArrayList<Path>();
+
+        /*
         if (this.historyPointer == this.pathLists.size()) {
             this.pathLists.add(path);
             this.paintLists.add(paint);
@@ -558,11 +568,13 @@ public class CanvasView extends View {
                 this.paintLists.remove(this.historyPointer);
             }
         }
+        */
 
         this.text = "";
 
         // Clear
         this.invalidate();
+
     }
 
     /**

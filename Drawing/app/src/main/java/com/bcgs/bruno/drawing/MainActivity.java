@@ -3,6 +3,7 @@ package com.bcgs.bruno.drawing;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -10,8 +11,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 
 import com.github.clans.fab.FloatingActionButton;
 
@@ -20,6 +19,7 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgcodecs.Imgcodecs;
 
@@ -47,7 +47,14 @@ public class MainActivity extends ActionBarActivity {
         FloatingActionButton btn_clearImg = (FloatingActionButton) findViewById(R.id.fabClearScreenBtn);
 
         this.canvas = (CanvasView)this.findViewById(R.id.canvas);
+
         this.canvas.setMode(CanvasView.Mode.DRAW);
+        this.canvas.setDrawer(CanvasView.Drawer.PEN);
+        this.canvas.setPaintStyle(Paint.Style.STROKE);
+        this.canvas.setOpacity(128);
+        //this.canvas.setPaintStrokeWidth(10);
+        this.canvas.setBlur(15);
+        //this.canvas.setMode(CanvasView.Mode.DRAW);
 
         //final MainDrawingView mdv = (MainDrawingView) findViewById(R.id.single_touch_view);
 
@@ -93,6 +100,44 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void loadImage(String path) {
+        Mat imgSource = Imgcodecs.imread(path);
+
+        Imgproc.cvtColor(imgSource, imgSource, Imgproc.COLOR_RGB2GRAY, 4); //gray
+
+        Mat edge = new Mat();
+        Mat edgeResized = new Mat();
+        Mat dst = new Mat();
+
+        Mat Img_Thres_Gray = new Mat();
+
+        double CannyAccThresh = threshold(imgSource,Img_Thres_Gray,0,255, 8);
+
+        double CannyThresh = 0.1 * CannyAccThresh;
+
+
+        //precisa dar um blur antes de aplicar canny
+        //como dar o threshhold correto
+        //redimensionar a imagem
+
+        Imgproc.Canny(imgSource, edge, 50, 150, 3, true);
+
+        Mat image255 = Mat.ones(imgSource.size(), CvType.CV_8UC1);
+
+        Core.multiply(image255, new Scalar(255), image255);
+        Core.subtract(image255, edge, edge);
+
+        Imgproc.resize(edge, edgeResized, new Size(this.canvas.getWidth(), this.canvas.getHeight()));
+        Imgproc.cvtColor(edgeResized, dst, Imgproc.COLOR_GRAY2RGBA, 4);
+
+        Bitmap newImage = Bitmap.createBitmap(this.canvas.getWidth(), this.canvas.getHeight(), Bitmap.Config.ARGB_8888);
+
+
+        Utils.matToBitmap(dst, newImage);
+
+        this.canvas.drawBitmap(newImage);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -108,42 +153,8 @@ public class MainActivity extends ActionBarActivity {
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
+            loadImage(picturePath);
             //ImageView imageView = (ImageView) findViewById(R.id.imgView);
-
-            Mat imgSource = Imgcodecs.imread(picturePath);
-
-            Imgproc.cvtColor(imgSource, imgSource, Imgproc.COLOR_RGB2GRAY, 4); //gray
-
-            Mat edge = new Mat();
-            Mat dst = new Mat();
-
-
-
-
-            Mat Img_Thres_Gray = new Mat();
-
-            double CannyAccThresh = threshold(imgSource,Img_Thres_Gray,0,255, 8);
-
-            double CannyThresh = 0.1 * CannyAccThresh;
-
-
-            //precisa dar um blur antes de aplicar canny
-            //como dar o threshhold correto
-            //redimensionar a imagem
-
-            Imgproc.Canny(imgSource, edge, 50, 150, 3, true);
-
-            Mat image255 = Mat.ones(imgSource.size(), CvType.CV_8UC1);
-
-            Core.multiply(image255, new Scalar(255), image255);
-            Core.subtract(image255, edge, edge);
-
-            Imgproc.cvtColor(edge, dst, Imgproc.COLOR_GRAY2RGBA, 4);
-
-            Bitmap newImage = Bitmap.createBitmap(imgSource.cols(), imgSource.rows(), Bitmap.Config.ARGB_8888);
-            Utils.matToBitmap(dst, newImage);
-
-            this.canvas.drawBitmap(newImage);
         }
 
     }

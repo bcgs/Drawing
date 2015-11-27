@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/home/igor/Área de Trabalho/gx_multimidia_2015-2/Drawing/openCVLibrary300/src/main/assets"/></dataSet><dataSet config="release"><source path="/home/igor/Área de Trabalho/gx_multimidia_2015-2/Drawing/openCVLibrary300/src/release/assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="C:\Users\Igor\Bitbucket\gx_multimidia_2015-2\Drawing\openCVLibrary300\src\main\assets"/></dataSet><dataSet config="release"><source path="C:\Users\Igor\Bitbucket\gx_multimidia_2015-2\Drawing\openCVLibrary300\src\release\assets"/></dataSet></merger>
