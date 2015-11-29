@@ -548,7 +548,7 @@ public class CanvasView extends View {
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.FILL);
 
-        this.historyPointer = 1;
+        this.historyPointer = 0;
         this.paintLists = new ArrayList<Paint>();
         this.pathLists = new ArrayList<Path>();
 
