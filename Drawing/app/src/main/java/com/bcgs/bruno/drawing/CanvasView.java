@@ -10,10 +10,13 @@ package com.bcgs.bruno.drawing;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -24,6 +27,8 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.MotionEvent;
 // import android.util.Log;
@@ -33,6 +38,8 @@ import android.view.MotionEvent;
  * This class defines fields and methods for drawing.
  */
 public class CanvasView extends View {
+
+    private ScaleGestureDetector sgd;
 
     // Enumeration for Mode
     public enum Mode {
@@ -135,6 +142,9 @@ public class CanvasView extends View {
     private void setup(Context context) {
         this.context = context;
 
+        this.sgd = new ScaleGestureDetector(getContext(), new ScaleListener(this));
+
+
         this.pathLists.add(new Path());
         this.paintLists.add(this.createPaint());
         this.historyPointer++;
@@ -177,6 +187,8 @@ public class CanvasView extends View {
             paint.setColor(this.paintStrokeColor);
             paint.setShadowLayer(this.blur, 0F, 0F, this.paintStrokeColor);
             paint.setAlpha(this.opacity);
+            paint.setPathEffect(new CornerPathEffect(10));
+
         }
 
         return paint;
@@ -282,12 +294,14 @@ public class CanvasView extends View {
         }
     }
 
+
     /**
      * This method defines processes on MotionEvent.ACTION_DOWN
      *
      * @param event This is argument of onTouchEvent method
      */
     private void onActionDown(MotionEvent event) {
+
         switch (this.mode) {
             case DRAW   :
             case ERASER :
@@ -329,6 +343,7 @@ public class CanvasView extends View {
      * @param event This is argument of onTouchEvent method
      */
     private void onActionMove(MotionEvent event) {
+
         float x = event.getX();
         float y = event.getY();
 
@@ -402,6 +417,7 @@ public class CanvasView extends View {
      * @param event This is argument of onTouchEvent method
      */
     private void onActionUp(MotionEvent event) {
+
         if (isDown) {
             this.startX = 0F;
             this.startY = 0F;
@@ -421,15 +437,47 @@ public class CanvasView extends View {
         // Before "drawPath"
         canvas.drawColor(this.baseColor);
 
-        if (this.bitmap != null) {
+         if (this.bitmap != null) {
             canvas.drawBitmap(this.bitmap, 0F, 0F, new Paint());
         }
 
         for (int i = 0; i < this.historyPointer; i++) {
+
             Path path   = this.pathLists.get(i);
             Paint paint = this.paintLists.get(i);
 
             canvas.drawPath(path, paint);
+
+            /*
+            int tx = 3;
+            int ty = 4;
+
+            int nIt = 3;
+
+            int cX = 0;
+            int cY = 0;
+
+            for(int j = 0; j < nIt; j++) {
+                Path path   = this.pathLists.get(i);
+                Paint paint = this.paintLists.get(i);
+
+                Random rd = new Random();
+                int nX = rd.nextInt(10);
+                int nY = rd.nextInt(1);
+
+                canvas.translate(nX, nY);
+
+                cX += nX;
+                cY += nY;
+
+                canvas.drawPath(path, paint);
+
+
+                //canvas.translate(tx, ty);
+            }
+
+            canvas.translate(-cX, -cY);
+            */
         }
 
         this.drawText(canvas);
@@ -445,18 +493,42 @@ public class CanvasView extends View {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                this.onActionDown(event);
-                break;
-            case MotionEvent.ACTION_MOVE :
-                this.onActionMove(event);
-                break;
-            case MotionEvent.ACTION_UP :
-                this.onActionUp(event);
-                break;
-            default :
-                break;
+
+        this.sgd.onTouchEvent(event);
+
+
+        int acao = event.getAction();
+
+        /*
+        if(acao == MotionEvent.ACTION_DOWN && acao != MotionEvent.ACTION_POINTER_DOWN) {
+
+        } else if(acao == MotionEvent.ACTION_MOVE) {
+
+        } else if(acao == MotionEvent.ACTION_UP && acao != MotionEvent.ACTION_POINTER_UP) {
+
+        } else if() {
+
+        } else {
+
+        }*/
+
+        Log.d("pointer count","pointer count: "+event.getPointerCount());
+
+        if(event.getPointerCount() == 1) {
+
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    this.onActionDown(event);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    this.onActionMove(event);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    this.onActionUp(event);
+                    break;
+                default:
+                    break;
+            }
         }
 
         // Re draw

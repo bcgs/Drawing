@@ -60,6 +60,38 @@
             fab:fab_label="Limpar tela"
             style="@style/MenuButtonsStyle" />
 
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabEraserBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit"
+            fab:fab_label="Modo Borracha"
+            style="@style/MenuButtonsStyle" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabCanetaBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit"
+            fab:fab_label="Modo Caneta"
+            style="@style/MenuButtonsStyle" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabDesfazerBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit"
+            fab:fab_label="Desfazer"
+            style="@style/MenuButtonsStyle" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabSalvarBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit"
+            fab:fab_label="Salvar Imagem"
+            style="@style/MenuButtonsStyle" />
+
     </com.github.clans.fab.FloatingActionMenu>
 
 </FrameLayout>

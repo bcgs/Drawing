@@ -6,11 +6,15 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 
@@ -22,6 +26,12 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgcodecs.Imgcodecs;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Random;
 
 import static org.opencv.imgproc.Imgproc.threshold;
 
@@ -45,6 +55,11 @@ public class MainActivity extends ActionBarActivity {
 
         FloatingActionButton btn_loadImg = (FloatingActionButton) findViewById(R.id.fabLoadImageBtn);
         FloatingActionButton btn_clearImg = (FloatingActionButton) findViewById(R.id.fabClearScreenBtn);
+
+        FloatingActionButton btn_Eraser = (FloatingActionButton) findViewById(R.id.fabEraserBtn);
+        FloatingActionButton btn_Caneta = (FloatingActionButton) findViewById(R.id.fabCanetaBtn);
+        FloatingActionButton btn_Desfazer = (FloatingActionButton) findViewById(R.id.fabDesfazerBtn);
+        FloatingActionButton btn_Salvar = (FloatingActionButton) findViewById(R.id.fabSalvarBtn);
 
         this.canvas = (CanvasView)this.findViewById(R.id.canvas);
 
@@ -75,6 +90,57 @@ public class MainActivity extends ActionBarActivity {
                 canvas.clear();
             }
         });
+
+        btn_Eraser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvas.setMode(CanvasView.Mode.ERASER);
+            }
+        });
+
+
+        btn_Caneta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvas.setMode(CanvasView.Mode.DRAW);
+            }
+        });
+
+        btn_Desfazer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                canvas.undo();
+            }
+        });
+
+        btn_Salvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveImage(canvas.getBitmap());
+                Toast.makeText(getBaseContext(), "Imagem Salva com Sucesso na sua pasta Imagens", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+
+    private void saveImage(Bitmap pictureBitmap) {
+        String path = Environment.getExternalStorageDirectory().toString();
+        OutputStream fOut = null;
+        File file = new File(path, "drawing_"+java.util.UUID.randomUUID()+".jpg"); // the File to save to
+
+        try{
+            fOut = new FileOutputStream(file);
+
+            pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+            fOut.flush();
+            fOut.close();
+
+            MediaStore.Images.Media.insertImage(getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
+        } catch (IOException e) {
+            Log.d("saveImage", "IOException ao salvar imgem");
+        }
+
     }
 
     @Override
@@ -120,12 +186,16 @@ public class MainActivity extends ActionBarActivity {
         //como dar o threshhold correto
         //redimensionar a imagem
 
+        //Imgproc.GaussianBlur(imgSource, imgSource, new Size(5, 5), 0.6);
+        //Imgproc.Canny(imgSource, edge, 0, 100, 5, true);
         Imgproc.Canny(imgSource, edge, 50, 150, 3, true);
 
         Mat image255 = Mat.ones(imgSource.size(), CvType.CV_8UC1);
 
         Core.multiply(image255, new Scalar(255), image255);
         Core.subtract(image255, edge, edge);
+
+        Imgproc.GaussianBlur(image255, image255, new Size(5, 5), 0.6);
 
         Imgproc.resize(edge, edgeResized, new Size(this.canvas.getWidth(), this.canvas.getHeight()));
         Imgproc.cvtColor(edgeResized, dst, Imgproc.COLOR_GRAY2RGBA, 4);
