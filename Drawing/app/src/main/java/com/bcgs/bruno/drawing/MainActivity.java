@@ -56,8 +56,8 @@ public class MainActivity extends ActionBarActivity {
         FloatingActionButton btn_loadImg = (FloatingActionButton) findViewById(R.id.fabLoadImageBtn);
         FloatingActionButton btn_clearImg = (FloatingActionButton) findViewById(R.id.fabClearScreenBtn);
 
-        FloatingActionButton btn_Eraser = (FloatingActionButton) findViewById(R.id.fabEraserBtn);
-        FloatingActionButton btn_Caneta = (FloatingActionButton) findViewById(R.id.fabCanetaBtn);
+        //FloatingActionButton btn_Eraser = (FloatingActionButton) findViewById(R.id.fabEraserBtn);
+        //FloatingActionButton btn_Caneta = (FloatingActionButton) findViewById(R.id.fabCanetaBtn);
         FloatingActionButton btn_Desfazer = (FloatingActionButton) findViewById(R.id.fabDesfazerBtn);
         FloatingActionButton btn_Salvar = (FloatingActionButton) findViewById(R.id.fabSalvarBtn);
 
@@ -91,6 +91,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        /*
         btn_Eraser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +105,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 canvas.setMode(CanvasView.Mode.DRAW);
             }
-        });
+        }); */
 
         btn_Desfazer.setOnClickListener(new View.OnClickListener() {
             @Override
